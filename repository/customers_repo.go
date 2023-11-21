@@ -3,12 +3,12 @@ package repository
 import (
 	"database/sql"
 	"enigma-laundry-clean-code/model/entity"
-	"time"
 )
 
 type CustomerRepository interface {
 	GetByID(id string) (entity.Customer, error)
 	Create(payload entity.Customer) (entity.Customer, error)
+	GetAll() ([]entity.Customer, error)
 }
 
 type customerRepository struct {
@@ -43,14 +43,15 @@ func (c *customerRepository) Create(payload entity.Customer) (entity.Customer, e
 		INSERT INTO customers (cust_id, cust_name, phone_number, address, email)
     VALUES ($1, $2, $3, $4, $5)
 		RETURNING cust_id, status, created_at, updated_at
-		`, payload.Id,
-		time.Now(),
+		`, payload.Id, payload.Name, payload.PhoneNumber, payload.Address, payload.Email, payload.CreatedAt, payload.UpdatedAt,
 	).Scan(
 		&customer.Id,
 		&customer.Name,
 		&customer.PhoneNumber,
 		&customer.Address,
 		&customer.Email,
+		&customer.CreatedAt,
+		&customer.UpdatedAt,
 	)
 	if err != nil {
 		tx.Rollback()
@@ -63,7 +64,7 @@ func (c *customerRepository) Create(payload entity.Customer) (entity.Customer, e
 	return customer, nil
 }
 
-func (c *customerRepository) GetAll(entity.Customer, error) {
+func (c *customerRepository) GetAll() ([]entity.Customer, error) {
 	rows, err := c.db.Query(`SELECT cust_id, cust_name, phone_number, address, email, created_at, updated_at FROM customers`)
 	if err != nil {
 		return nil, err

@@ -1,0 +1,7 @@
+API_PORT=8080
+HOST=localhost
+PORT=5432
+DB_NAME=enigma_laundry
+DB_USER=postgres
+PASSWORD=123
+DB_DRIVER=postgres

@@ -43,6 +43,19 @@ func (cs *CustomerHandler) getByID(c *gin.Context) {
 	dto.SendSingleResponse(c, http.StatusOK, "OK", customer)
 }
 
+func (cs *CustomerHandler) getAll(c *gin.Context) {
+	customers, err := cs.uc.GetAll()
+	if err != nil {
+		dto.SendSingleResponse(c, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+	dto.SendSingleResponse(c, http.StatusOK, "OK", customers)
+}
+
+func (cs *CustomerHandler) RouteGetAll() {
+
+}
+
 func (cs *CustomerHandler) RouteGetByID() {
 	cs.rg.GET("/customer/:id", cs.getByID)
 }

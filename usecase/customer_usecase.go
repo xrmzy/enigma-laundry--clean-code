@@ -10,6 +10,7 @@ import (
 type CustomerUseCase interface {
 	FindByID(id string) (entity.Customer, error)
 	CreatedCustomer(payload dto.CustomersRequestDto) (entity.Customer, error)
+	GetAll() ([]entity.Customer, error)
 }
 
 type customerUseCase struct {
@@ -40,6 +41,14 @@ func (c *customerUseCase) CreatedCustomer(payload dto.CustomersRequestDto) (enti
 		return entity.Customer{}, err
 	}
 	return customer, nil
+}
+
+func (c *customerUseCase) GetAll() ([]entity.Customer, error) {
+	customers, err := c.repo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return customers, nil
 }
 
 func NewCustomerUseCase(repo repository.CustomerRepository) CustomerUseCase {
